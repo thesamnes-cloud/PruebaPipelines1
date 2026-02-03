@@ -20,10 +20,10 @@ phases:
       - docker tag $ImageName:latest 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
       - docker push 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
 
-      - printf '[{"name":"%s","imageUri":"%s"}]' \
-        "$CONTAINER_NAME" \
-        "492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest" \
-        > imagedefinitions.json
+      - echo "Generating imagedefinitions.json"
+      - echo -n "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest\"}]" > imagedefinitions.json
+      - cat imagedefinitions.json
+
 
       - cat imagedefinitions.json
 
