@@ -9,62 +9,23 @@ env:
 phases:
   pre_build:
     commands:
-      - echo "Login to ECR"
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
   build:
     commands:
-      - echo "Build Docker image"
-      - cd $CODEBUILD_SRC_DIR
       - docker build -t $ImageName -f Dockerfile .
 
   post_build:
     commands:
-      - echo "Push image to ECR"
       - docker tag $ImageName:latest 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
       - docker push 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
 
-      - echo "Generating imagedefinitions.json"
-      version: 0.2
-
-env:
-  variables:
-    ImageName: app-two
-    AWS_DEFAULT_REGION: us-east-2
-    CONTAINER_NAME: default-proyecto-1-app-1
-
-phases:
-  pre_build:
-    commands:
-      - echo "Login to ECR"
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-
-  build:
-    commands:
-      - echo "Build Docker image"
-      - cd $CODEBUILD_SRC_DIR
-      - docker build -t $ImageName -f Dockerfile .
-
-  post_build:
-    commands:
-      - echo "Push image to ECR"
-      - docker tag $ImageName:latest 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
-      - docker push 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
-
-      - echo "Generating imagedefinitions.json"
       - printf '[{"name":"%s","imageUri":"%s"}]' \
-        $CONTAINER_NAME \
-        492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest \
+        "$CONTAINER_NAME" \
+        "492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest" \
         > imagedefinitions.json
 
-      - echo "===== imagedefinitions.json ====="
       - cat imagedefinitions.json
-
-
-artifacts:
-  files:
-    - imagedefinitions.json
-
 
 artifacts:
   files:
