@@ -16,7 +16,7 @@ phases:
     commands:
       - echo "Build Docker image"
       - cd $CODEBUILD_SRC_DIR
-      - docker build -t $ImageName -f /Dockerfile .
+      - docker build -t $ImageName -f Dockerfile .
 
   post_build:
     commands:
